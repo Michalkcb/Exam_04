@@ -1,11 +1,11 @@
 #include <string.h>
-#include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <stdlib.h>
 void err(char *s)
 {
 	while (*s)
-		write(2, s+, 1)
+		write(2, s++, 1);
 }
 
 int cd(char **av, int i)
@@ -16,11 +16,14 @@ int cd(char **av, int i)
 		return err("error: cd: cannot change directory to "), err(av[1]), err("\n"), 1;
 	return 0;
 }
-int set_pipe(int has_pipe, int *fd, int end)
+void set_pipe(int has_pipe, int *fd, int end)
 {
-
+	if (has_pipe && (dup2(fd[end], end)== -1 || close(fd[0]) == -1 || close(fd[1]) == -1))
+	{
+		err("error: fatal\n");
+		exit(1);
+	}
 }
-
 int exec(char **av, int i, char **envp)
 {
 	int has_pipe, fd[2], pid, status;
@@ -44,7 +47,6 @@ int exec(char **av, int i, char **envp)
 	set_pipe(has_pipe, fd, 0);
 	return WIFEXITED(status) && WEXITSTATUS(status);
 }
-
 int main(int ac, char **av, char **envp)
 {
 	(void)ac;
