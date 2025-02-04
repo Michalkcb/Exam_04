@@ -10,7 +10,11 @@ void err(char *s)
 
 int cd(char **av, int i)
 {
-
+	if (i != 2)
+		return err("error: cd: bad arguments\n"), 1;
+	if (chdir(av[1]) == -1)
+		return err("error: cd: cannot change directory to "), err(av[1]), err("\n"), 1;
+	return 0;
 }
 int set_pipe(int has_pipe, int *fd, int end)
 {
