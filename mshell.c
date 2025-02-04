@@ -2,9 +2,25 @@
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/wait.h>
+void err(char *s)
+{
+	while (*s)
+		write(2, s+, 1)
+}
+
+int cd(char **av, int i)
+{
+
+}
 
 int exec(char **av, int i, char **envp)
 {
+	int has_pipe, fd[2], pid, status;
+	has_pipe = av[i] && !strcmp(av[i], "|");
+	if (!has_pipe && !strcmp(*av, "cd"))
+		return cd(av, i);
+	if (has_pipe && pipe(fd) == -1)
+		err("error: fatal\n"), exit(1);
 	
 }
 
